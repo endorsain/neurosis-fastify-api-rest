@@ -1,0 +1,1 @@
+export { GetInfo } from "./GetInfo";

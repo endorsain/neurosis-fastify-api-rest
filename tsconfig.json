@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Compila a la versión más reciente de JS disponible
+    "experimentalDecorators": true, // Habilita decoradores (@Injectable, @Component, etc.)
+    "emitDecoratorMetadata": true, // Genera metadata para decoradores (útil para DI)
+    "module": "NodeNext", // Sistema de módulos para Node.js moderno
+    "rootDir": "./src", // Carpeta raíz donde están tus archivos TS
+    "outDir": "./dist", // Carpeta donde se guardan los JS compilados
+    "esModuleInterop": true, // Compatibilidad entre import/export y require
+    "forceConsistentCasingInFileNames": true, // Fuerza nombres consistentes (evita errores de mayúsculas)
+    "strict": true // Activa TODAS las verificaciones estrictas de tipos
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.d.ts"] // Incluye todos los .ts y .d.ts en src/
+}
