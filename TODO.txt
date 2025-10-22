@@ -1,0 +1,1 @@
+TODO: Separe el login y el registro con google en dos funciones. Ahora queda ver el codigo que se repite y que se puede hacer con eso.

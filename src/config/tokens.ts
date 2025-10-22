@@ -39,7 +39,7 @@ const makeTokenCfg = (
   cookieOptions: {
     httpOnly: true,
     secure: NODE_PROD,
-    sameSite: "strict",
+    sameSite: NODE_PROD ? "strict" : "lax",
     path: "/",
     maxAgeMs: duration * 1000,
   },

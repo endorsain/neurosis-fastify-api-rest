@@ -10,9 +10,12 @@ export class UserController {
 
   async getInfo(request: FastifyRequest, reply: FastifyReply) {
     try {
+      console.log("JEJEJE: ");
       const tokenData = request.accessTokenData;
 
       const user = await this.userService.getInfoUseCase(tokenData);
+
+      console.log("JEJEJE: ", user);
 
       reply.code(200).send({
         user,

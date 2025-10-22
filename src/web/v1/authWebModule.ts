@@ -18,7 +18,11 @@ export async function authWebModule(fastify: FastifyInstance) {
   fastify.post("/register", authController.registerUser.bind(authController));
   fastify.post("/login", authController.loginUser.bind(authController));
   fastify.post(
-    "/access-with-google",
+    "/register-with-google",
+    authController.registerWithGoogleUser.bind(authController)
+  );
+  fastify.post(
+    "/login-with-google",
     authController.accessWithGoogleUser.bind(authController)
   );
 }

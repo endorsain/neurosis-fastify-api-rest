@@ -97,6 +97,8 @@ export class AuthController {
         deviceInfo
       );
 
+      console.log(result.accessToken);
+
       this.tokenService.setTokenCookie(
         reply,
         result.accessToken,
@@ -118,6 +120,49 @@ export class AuthController {
     }
   }
 
+  async registerWithGoogleUser(
+    request: FastifyRequest<{
+      Body: { googleCredential: string; username: string; password: string };
+    }>,
+    reply: FastifyReply
+  ) {
+    try {
+      console.log("🔐 Iniciando registro con Google...");
+
+      // Extraer device info del middleware
+      const deviceInfo = request.deviceInfo;
+      const { googleCredential, username, password } = request.body;
+
+      // Ejecutar caso de uso
+      const result = await this.authService.registerWithGoogleUseCase(
+        googleCredential,
+        username,
+        password,
+        deviceInfo
+      );
+
+      console.log(result.accessToken);
+
+      this.tokenService.setTokenCookie(
+        reply,
+        result.accessToken,
+        TOKENS_CONFIG.access
+      );
+      this.tokenService.setTokenCookie(
+        reply,
+        result.refreshToken,
+        TOKENS_CONFIG.refresh
+      );
+
+      // Responder con éxito
+      reply.code(200).send({
+        message: "Login con Google exitoso",
+      });
+    } catch (error: any) {
+      request.log.error("AuthController - accessWithGoogleUser: ", error);
+      throw error;
+    }
+  }
   // async logout(request: FastifyRequest, reply: FastifyReply) {
   //   try {
   //     // Limpiar todas las cookies

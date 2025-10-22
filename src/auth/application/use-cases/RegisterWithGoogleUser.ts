@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { IUserRepository } from "../../../user/domain/IUserRepository";
 import { DeviceInfoDTO } from "../dto/deviceInfo";
 import { IUserTokensRepository } from "../../domain/IUserTokensRepository";
@@ -5,7 +6,7 @@ import { TokenService } from "../../../services/TokenService";
 import { TOKENS_CONFIG } from "../../../config/tokens";
 import { AuthError, GoogleAuthError } from "../../../errors";
 
-export class AccessWithGoogleUser {
+export class RegisterWithGoogleUser {
   constructor(
     private userRepository: IUserRepository,
     private userTokensRepository: IUserTokensRepository,
@@ -15,32 +16,47 @@ export class AccessWithGoogleUser {
 
   async execute(
     googleCredential: string,
+    username: string,
+    password: string,
     deviceInfo: DeviceInfoDTO
   ): Promise<any> {
     try {
-      console.log("- googleCredential: ", googleCredential);
       // ✅ 1. Verificar y decodificar token de Google
       const googlePayload = await this.verifyGoogleToken(googleCredential);
 
+      const hashedPassword = await bcrypt.hash(password, 12);
+
       // ✅ 2. Extraer email del token
-      console.log("📧 Email extraído de Google:", googlePayload.email);
+      const emailExist = await this.userRepository.findByEmail(
+        googlePayload.email
+      );
+      const usernameExist = await this.userRepository.findByUsername(username);
 
-      // ✅ 3. Buscar usuario en base de datos
-      const dbUser = await this.userRepository.findByEmail(googlePayload.email);
+      if (emailExist! || usernameExist!)
+        throw AuthError.emailOrUsernameAlreadyExists();
 
-      if (!dbUser) throw AuthError.userNotFound();
+      const newUser = await this.userRepository.createUser({
+        email: googlePayload.email,
+        username: username,
+        password: hashedPassword,
+      });
+
+      await this.userTokensRepository.createUserTokensDocument({
+        id: newUser.id,
+        username: newUser.username,
+      });
 
       const access = this.tokenService.generateTokenData(
-        dbUser,
+        newUser,
         this.tokensConfig.access
       );
       const refresh = this.tokenService.generateTokenData(
-        dbUser,
+        newUser,
         this.tokensConfig.refresh
       );
 
       await this.userTokensRepository.saveLoginTokens(
-        dbUser.id!,
+        newUser.id!,
         { access, refresh },
         deviceInfo
       );

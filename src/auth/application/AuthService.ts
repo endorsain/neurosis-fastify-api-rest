@@ -1,4 +1,9 @@
-import { RegisterUser, LoginUser, AccessWithGoogleUser } from "./use-cases";
+import {
+  RegisterUser,
+  LoginUser,
+  AccessWithGoogleUser,
+  RegisterWithGoogleUser,
+} from "./use-cases";
 import { IUserRepository } from "../../user/domain/IUserRepository";
 import { DeviceInfoDTO } from "./dto/deviceInfo";
 import { IUserTokensRepository } from "../domain/IUserTokensRepository";
@@ -9,6 +14,7 @@ export class AuthService {
   private registerUser: RegisterUser;
   private loginUser: LoginUser;
   private accessWithGoogleUser: AccessWithGoogleUser;
+  private registerWithGoogleUser: RegisterWithGoogleUser;
   private tokenService: TokenService;
 
   constructor(
@@ -28,6 +34,11 @@ export class AuthService {
       this.tokenService
     );
     this.accessWithGoogleUser = new AccessWithGoogleUser(
+      userRepository,
+      userTokensRepository,
+      this.tokenService
+    );
+    this.registerWithGoogleUser = new RegisterWithGoogleUser(
       userRepository,
       userTokensRepository,
       this.tokenService
@@ -57,6 +68,20 @@ export class AuthService {
   ): Promise<any> {
     return await this.accessWithGoogleUser.execute(
       googleCredential,
+      deviceInfo
+    );
+  }
+
+  async registerWithGoogleUseCase(
+    googleCredential: string,
+    username: string,
+    password: string,
+    deviceInfo: DeviceInfoDTO
+  ): Promise<any> {
+    return await this.registerWithGoogleUser.execute(
+      googleCredential,
+      username,
+      password,
       deviceInfo
     );
   }
