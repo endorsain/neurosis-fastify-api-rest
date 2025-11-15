@@ -16,9 +16,13 @@ export async function buildServer() {
     process.env.MONGODB_URI || "mongodb://localhost:27017/neurosis";
   await mongoose.connect(mongoUri);
 
+  console.log("antes de deviceInfo");
   fastify.addHook("preHandler", addDeviceInfoMiddleware);
+  console.log("paso deviceInfo");
   fastify.setErrorHandler(errorHandler);
+  console.log("paso errorHandler");
   await fastify.register(webModule);
+  console.log("paso webModule");
 
   return fastify;
 }
