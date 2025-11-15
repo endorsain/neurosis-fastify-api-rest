@@ -16,6 +16,15 @@ export class AuthError extends MainError {
   }
 
   // Factory methods (como atajos para instanciar errores específicos)
+  static emailAlreadyExists(originalError?: any): AuthError {
+    return new AuthError("EmailAlreadyExistsError", 409, originalError);
+  }
+
+  static usernameAlreadyExists(originalError?: any): AuthError {
+    return new AuthError("UsernameAlreadyExistsError", 409, originalError);
+  }
+
+  //TODO: Tal vez ya existe?
   static emailOrUsernameAlreadyExists(originalError?: any): AuthError {
     return new AuthError(
       "EmailOrUsernameAlreadyExistsError",

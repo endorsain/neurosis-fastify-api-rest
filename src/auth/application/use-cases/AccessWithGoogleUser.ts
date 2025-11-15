@@ -5,6 +5,10 @@ import { TokenService } from "../../../services/TokenService";
 import { TOKENS_CONFIG } from "../../../config/tokens";
 import { AuthError, GoogleAuthError } from "../../../errors";
 
+// TODO: Cambiar a LoginWithGoogleUser
+// TODO: LoginUser identifica si "credential" es email o username.
+// Esto tal vez queda mejor si separamos las rutas, 'login-with-username'
+// y 'login-with-email' y en el servidor se crean sus casos de uso respectivamente.
 export class AccessWithGoogleUser {
   constructor(
     private userRepository: IUserRepository,

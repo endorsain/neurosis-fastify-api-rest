@@ -1,1 +1,6 @@
 TODO: Separe el login y el registro con google en dos funciones. Ahora queda ver el codigo que se repite y que se puede hacer con eso.
+
+TODO: Cambiar a LoginWithGoogleUser
+
+TODO: LoginUser identifica si "credential" es email o username.
+Esto tal vez queda mejor si separamos las rutas, 'login-with-username' y 'login-with-email' y en el servidor se crean sus casos de uso respectivamente.

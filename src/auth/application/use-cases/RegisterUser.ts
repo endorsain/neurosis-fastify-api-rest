@@ -25,8 +25,15 @@ export class RegisterUser {
         registerData.username
       );
 
-      if (emailExist! || usernameExist!)
-        throw AuthError.emailOrUsernameAlreadyExists();
+      // if (emailExist! || usernameExist!)
+      //   throw AuthError.emailOrUsernameAlreadyExists();
+
+      if (emailExist) {
+        throw AuthError.emailAlreadyExists();
+      }
+      if (usernameExist) {
+        throw AuthError.usernameAlreadyExists();
+      }
 
       const newUser = await this.userRepository.createUser({
         ...registerData,

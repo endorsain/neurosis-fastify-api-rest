@@ -1,50 +1,24 @@
 import Fastify from "fastify";
-import cookie from "@fastify/cookie";
-import mongoose from "mongoose";
-import "dotenv/config";
-import { webModule } from "./web/webModule";
-import { errorHandler } from "./web/handlers/errorHandler";
 import { corsPlugin } from "./web/plugins/cors";
+import fastifyCookie from "@fastify/cookie";
+import mongoose from "mongoose";
 import { addDeviceInfoMiddleware } from "./web/middleware";
+import { errorHandler } from "./web/handlers/errorHandler";
+import { webModule } from "./web/webModule";
 
-async function bootstrap() {
-  const fastify = Fastify({
-    logger: {
-      level: "info",
-    },
-  });
-  try {
-    await corsPlugin(fastify);
-    console.log("✅ CORS configurado correctamente");
-    await fastify.register(cookie);
+export async function buildServer() {
+  const fastify = Fastify({ logger: { level: "info" } });
 
-    const mongoUri =
-      process.env.MONGODB_URI || "mongodb://localhost:27017/neurosis";
+  await corsPlugin(fastify);
+  await fastify.register(fastifyCookie);
 
-    await mongoose.connect(mongoUri);
-    console.log("✅ Conectado a MongoDB");
+  const mongoUri =
+    process.env.MONGODB_URI || "mongodb://localhost:27017/neurosis";
+  await mongoose.connect(mongoUri);
 
-    fastify.addHook("preHandler", addDeviceInfoMiddleware);
+  fastify.addHook("preHandler", addDeviceInfoMiddleware);
+  fastify.setErrorHandler(errorHandler);
+  await fastify.register(webModule);
 
-    fastify.setErrorHandler(errorHandler);
-    await fastify.register(webModule);
-
-    // ✅ Graceful shutdown
-    process.on("SIGTERM", async () => {
-      await fastify.close();
-      await mongoose.disconnect();
-      process.exit(0);
-    });
-
-    // ✅ Iniciar servidor
-    const port = Number(process.env.PORT) || 3000;
-    await fastify.listen({ port, host: "0.0.0.0" });
-
-    console.log(`🚀 Servidor corriendo en puerto ${port}`);
-  } catch (error) {
-    console.error("❌ Error:", error);
-    process.exit(1);
-  }
+  return fastify;
 }
-
-bootstrap();
