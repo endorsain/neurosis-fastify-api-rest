@@ -1,4 +1,4 @@
-import { buildServer } from "../src/main";
+import { buildServer } from "./vercel.main";
 
 let server: any;
 

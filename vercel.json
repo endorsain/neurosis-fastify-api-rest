@@ -7,6 +7,6 @@
       "all": false
     }
   },
-  "builds": [{ "src": "api/server.ts", "use": "@vercel/node" }],
-  "routes": [{ "src": "/api/(.*)", "dest": "/api/server.ts" }]
+  "builds": [{ "src": "src/server.ts", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "/src/server.ts" }]
 }
