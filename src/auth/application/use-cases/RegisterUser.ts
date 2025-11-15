@@ -16,6 +16,7 @@ export class RegisterUser {
   }): Promise<void> {
     try {
       //TODO: Hacer la validacion de ingreso de datos
+      console.log("userdata: ", registerData);
       const hashedPassword = await bcrypt.hash(registerData.password, 12);
 
       const emailExist = await this.userRepository.findByEmail(
@@ -24,7 +25,7 @@ export class RegisterUser {
       const usernameExist = await this.userRepository.findByUsername(
         registerData.username
       );
-
+      console.log("emailExist", emailExist, "usernameExist", usernameExist);
       // if (emailExist! || usernameExist!)
       //   throw AuthError.emailOrUsernameAlreadyExists();
 
@@ -39,6 +40,8 @@ export class RegisterUser {
         ...registerData,
         password: hashedPassword,
       });
+
+      console.log("usuario mongo: ", newUser);
 
       await this.userTokensRepository.createUserTokensDocument({
         id: newUser.id,
