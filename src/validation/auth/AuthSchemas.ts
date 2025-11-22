@@ -2,7 +2,7 @@ import z from "zod";
 
 export const PasswordSchema = z
   .string()
-  .min(8, "La contraseña debe tener al menos 8 caracteres")
+  .min(6, "La contraseña debe tener al menos 8 caracteres")
   .max(128, "La contraseña no puede superar 128 caracteres");
 
 // export const PasswordComplexSchema = PasswordSchema.refine(
