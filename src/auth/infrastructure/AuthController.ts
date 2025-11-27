@@ -52,6 +52,7 @@ export class AuthController {
     try {
       const deviceInfo = request.deviceInfo;
       const { credential, password } = request.body;
+      // console.log("✅ Inicio de sesion");
 
       const result = await this.authService.loginUserUseCase(
         credential,
